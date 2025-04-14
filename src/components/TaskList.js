@@ -56,7 +56,6 @@ const TaskList = () => {
       setNewTaskPriority("Medium");
     } catch (error) {
       console.error("Error adding task:", error);
-      alert("Failed to add task. Please try again.");
     }
   };
 
@@ -77,7 +76,6 @@ const TaskList = () => {
       console.error("Error updating task:", error);
       // Revert the optimistic update if the API call fails
       setTasks(tasks);
-      alert("Failed to update task. Please try again.");
     }
   };
 
@@ -91,7 +89,6 @@ const TaskList = () => {
       console.error("Error deleting task:", error);
       // Revert the optimistic deletion if the API call fails
       fetchTasks();
-      alert("Failed to delete task. Please try again.");
     }
   };
 
@@ -112,7 +109,6 @@ const TaskList = () => {
     } catch (error) {
       console.error("Error clearing completed tasks:", error);
       fetchTasks(); // Refresh the list on error
-      alert("Failed to clear completed tasks. Please try again.");
     }
   };
 
