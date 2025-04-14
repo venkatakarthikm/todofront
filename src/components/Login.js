@@ -1,0 +1,139 @@
+import React, {useState} from "react";
+import axios from "axios";
+import config from "../utils/config";
+import "../css/styles.css";
+
+const Login = ({ setLoggedIn, setShowRegister }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.post(`${config}/auth/login`, { username, password });
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setLoggedIn(true);
+    } catch (error) {
+      setError(error.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="container">
+      <div className="card" style={styles.authCard}>
+        <h2 style={styles.authTitle}>Login to TaskMaster</h2>
+        {error && <div style={styles.errorMessage}>{error}</div>}
+        <form onSubmit={handleLogin}>
+          <div style={styles.inputGroup}>
+            <label htmlFor="username" style={styles.label}>Username</label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="input"
+              style={styles.input}
+              required
+            />
+          </div>
+          <div style={styles.inputGroup}>
+            <label htmlFor="password" style={styles.label}>Password</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input"
+              style={styles.input}
+              required
+            />
+          </div>
+          <button 
+            type="submit" 
+            style={styles.submitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+        <p style={styles.switchText}>
+          Don't have an account?{" "}
+          <span onClick={() => setShowRegister(true)} style={styles.switchLink}>
+            Register here
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  authCard: {
+    maxWidth: "400px",
+    margin: "80px auto 20px",
+    padding: "30px",
+  },
+  authTitle: {
+    textAlign: "center",
+    marginBottom: "30px",
+    color: "#3498db",
+    fontSize: "28px",
+  },
+  inputGroup: {
+    marginBottom: "20px",
+  },
+  label: {
+    display: "block",
+    marginBottom: "8px",
+    fontWeight: "500",
+    color: "#2c3e50",
+  },
+  input: {
+    width: "100%",
+  },
+  submitButton: {
+    width: "100%",
+    padding: "14px",
+    backgroundColor: "#3498db",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "16px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    marginTop: "10px",
+  },
+  switchText: {
+    marginTop: "25px",
+    textAlign: "center",
+    fontSize: "15px",
+    color: "#7f8c8d",
+  },
+  switchLink: {
+    color: "#3498db",
+    cursor: "pointer",
+    fontWeight: "500",
+    textDecoration: "none",
+  },
+  errorMessage: {
+    backgroundColor: "rgba(231, 76, 60, 0.1)",
+    color: "#e74c3c",
+    padding: "10px 15px",
+    borderRadius: "5px",
+    marginBottom: "20px",
+    textAlign: "center",
+    fontSize: "14px",
+  },
+};
+
+export default Login;
